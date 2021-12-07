@@ -84,8 +84,9 @@ function ClickSearch(){
             '/'문자(혹은 다른 구분자) 통해 구분하여 하나의 문자로 만든 후
             정규식을 통해 비교하면 더욱 빠르게 비교 가능할 것 같음
             */
-            $.each(entry.mean, function(index, mean){
-                if(mean == searchText){
+            $.each(entry.keyword, function(index, keyword){
+                var trimKeyword = keyword.trim()
+                if(trimKeyword == searchText){
                     loadEmoji(entry.icon, "#emojiList");
                 }
             });
@@ -99,7 +100,8 @@ function ClickCategory(){
     $("#emojiList").children('div').remove();
     $.getJSON('../data/emoji.json', function(data) {
         $.each(data, function(entryIndex, entry) {
-            if(entry.category == category || category == "all"){
+            const entryCategory = '' + entry.group
+            if(entryCategory.trim() == category || category == "All"){
                 loadEmoji(entry.icon, "#emojiList");
             }
         });
@@ -122,9 +124,7 @@ $("document").ready(function(){
         loadEmoji(result.user, "#useEmojiList");
     });
 
-    //이모지 데이터베이스(json)을 불러옴
     $.getJSON('../data/emoji.json', function(data) {
-        //json의 요소를 하나씩 탐색
         $.each(data, function(entryIndex, entry) {
             loadEmoji(entry.icon, "#emojiList");
         });

@@ -53,3 +53,7 @@
     height: auto;
     width: auto;
   }
+
+  #emojiList{
+    padding-bottom: 100px;
+  }
