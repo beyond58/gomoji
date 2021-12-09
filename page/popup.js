@@ -12,8 +12,17 @@ function ClickEmoji(){
     최근 이모지가 하나밖에 저장안됨
     */
     newEmoji = this.innerHTML;
-    chrome.storage.sync.set({'user': newEmoji}, function() { 
-        loadEmoji(newEmoji, "#useEmojiList")
+    
+    chrome.storage.sync.get(['user'], ({ user: emojis }) => {
+        const recentEmojis = [];
+        if (emojis && emojis.length > 0) { 
+            recentEmojis.push(...emojis.filter(icon => icon !== newEmoji)); 
+        }
+        if (recentEmojis.length > 17) { recentEmojis.pop(); }
+        recentEmojis.unshift(newEmoji);
+        chrome.storage.sync.set({ 'user': recentEmojis }, () => {
+            loadRecentEmojis(recentEmojis, "#useEmojiList");
+        });
     });
     /*
     copyArea에 텍스트를 입력하면 클릭한 이모지가 덧붙여지지 않는 버그발생
@@ -108,6 +117,19 @@ function ClickCategory(){
     });
 }
 
+// load recently used emojis
+function loadRecentEmojis(iconArray, id){
+    $(id).html("");
+    iconArray.forEach(icon => {
+        const box = document.createElement("div");
+        const node = document.createTextNode(icon);
+        box.appendChild(node);
+        box.addEventListener("click", ClickEmoji);
+        $(box).css('float', 'left');
+        $(id).append(box);
+    })
+}
+
 //load all emoji
 function loadEmoji(icon, id){
     var box = document.createElement("div");
@@ -120,8 +142,8 @@ function loadEmoji(icon, id){
 }
 
 $("document").ready(function(){
-    chrome.storage.sync.get(['user'], function(result) {
-        loadEmoji(result.user, "#useEmojiList");
+    chrome.storage.sync.get(['user'], function({ user: storedEmojis }) {
+        loadRecentEmojis(storedEmojis, "#useEmojiList");
     });
 
     $.getJSON('../data/emoji.json', function(data) {
