@@ -16,7 +16,7 @@ function ClickEmoji(){
     chrome.storage.sync.get(['user'], ({ user: emojis }) => {
         const recentEmojis = [];
         if (emojis && emojis.length > 0) { 
-            recentEmojis.push(...emojis.filter(icon => icon !== newEmoji)); 
+            recentEmojis.push(...Array.from(emojis).filter(icon => icon !== newEmoji)); 
         }
         if (recentEmojis.length > 17) { recentEmojis.pop(); }
         recentEmojis.unshift(newEmoji);
@@ -120,7 +120,7 @@ function ClickCategory(){
 // load recently used emojis
 function loadRecentEmojis(iconArray, id){
     $(id).html("");
-    iconArray.forEach(icon => {
+    Array.from(iconArray).forEach(icon => {
         const box = document.createElement("div");
         const node = document.createTextNode(icon);
         box.appendChild(node);
