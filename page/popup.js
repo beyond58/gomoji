@@ -6,11 +6,6 @@ function ClickEmoji(){
     $("#copyArea").attr('value', newCopy);
 
     // chrome storage에 최근 사용한 emoji 저장
-    /*
-    수정 보완 필요
-    처음 앱을 시작하면 최근 이모지에 undifined라고 뜨고
-    최근 이모지가 하나밖에 저장안됨
-    */
     newEmoji = this.innerHTML;
     
     chrome.storage.sync.get(['user'], ({ user: emojis }) => {
@@ -36,7 +31,7 @@ function ClickEmoji(){
 function ClickCopy(){
     var text = $("#copyArea").val();
     /*
-    execCommand 지원 중단(2015년 4월)
+    execCommand is service stop
     text.select();
     document.execCommand("copy");
     */
@@ -88,11 +83,6 @@ function ClickSearch(){
     $.getJSON('../data/emoji.json', function(data) {
         //json의 요소를 하나씩 탐색
         $.each(data, function(entryIndex, entry) {
-            /*
-            검색속도 향상을 위해서는 mean을 배열로 구분하지말고
-            '/'문자(혹은 다른 구분자) 통해 구분하여 하나의 문자로 만든 후
-            정규식을 통해 비교하면 더욱 빠르게 비교 가능할 것 같음
-            */
             $.each(entry.keyword, function(index, keyword){
                 var trimKeyword = keyword.trim()
                 if(trimKeyword == searchText){
